@@ -1,4 +1,6 @@
 import { QRCodeSVG } from "qrcode.react";
+import CertificateTemplate1 from "./CertificateTemplate1";
+import CertificateTemplate2 from "./CertificateTemplate2";
 
 interface CertificatePreviewProps {
   studentName: string;
@@ -10,6 +12,7 @@ interface CertificatePreviewProps {
   description?: string;
   certificateId?: string;
   verificationUrl?: string;
+  templateType?: string;
 }
 
 const CertificatePreview = ({
@@ -22,6 +25,7 @@ const CertificatePreview = ({
   description,
   certificateId,
   verificationUrl,
+  templateType = "classic",
 }: CertificatePreviewProps) => {
   const formatDate = (dateString?: string) => {
     if (!dateString) return "";
@@ -36,6 +40,40 @@ const CertificatePreview = ({
     return "";
   };
 
+  // Render different templates based on templateType
+  if (templateType === "internship") {
+    return (
+      <CertificateTemplate1
+        studentName={studentName}
+        institutionName={institutionName}
+        certificateType={certificateType}
+        domain={domain}
+        startDate={startDate}
+        endDate={endDate}
+        description={description}
+        certificateId={certificateId}
+        verificationUrl={verificationUrl}
+      />
+    );
+  }
+
+  if (templateType === "training") {
+    return (
+      <CertificateTemplate2
+        studentName={studentName}
+        institutionName={institutionName}
+        certificateType={certificateType}
+        domain={domain}
+        startDate={startDate}
+        endDate={endDate}
+        description={description}
+        certificateId={certificateId}
+        verificationUrl={verificationUrl}
+      />
+    );
+  }
+
+  // Default classic template
   return (
     <div id="certificate-preview" className="relative aspect-[1.414/1] w-full overflow-hidden rounded-lg bg-gradient-to-br from-primary via-primary to-secondary p-8 shadow-[var(--shadow-certificate)]">
       {/* White Content Area */}

@@ -180,6 +180,7 @@ const Success = () => {
                     description={certificate.description}
                     certificateId={certificate.certificate_id}
                     verificationUrl={certificate.verification_url}
+                    templateType={certificate.template_type || "classic"}
                   />
                 </div>
               </CardContent>
