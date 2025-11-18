@@ -44,6 +44,7 @@ const Generate = () => {
     startDate: "",
     endDate: "",
     description: "",
+    templateType: "classic",
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -89,6 +90,7 @@ const Generate = () => {
           description: formData.description || null,
           verification_url: verificationUrl,
           qr_code_data: verificationUrl,
+          template_type: formData.templateType,
         })
         .select()
         .single();
@@ -246,6 +248,7 @@ const Generate = () => {
                   startDate={formData.startDate}
                   endDate={formData.endDate}
                   description={formData.description}
+                  templateType={formData.templateType}
                 />
               </CardContent>
             </Card>

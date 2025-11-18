@@ -28,6 +28,7 @@ export type Database = {
           qr_code_data: string
           start_date: string | null
           student_name: string
+          template_type: string | null
           updated_at: string
           verification_url: string
         }
@@ -44,6 +45,7 @@ export type Database = {
           qr_code_data: string
           start_date?: string | null
           student_name: string
+          template_type?: string | null
           updated_at?: string
           verification_url: string
         }
@@ -60,6 +62,7 @@ export type Database = {
           qr_code_data?: string
           start_date?: string | null
           student_name?: string
+          template_type?: string | null
           updated_at?: string
           verification_url?: string
         }
