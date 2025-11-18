@@ -36,6 +36,7 @@ const Generate = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isGenerating, setIsGenerating] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     studentName: "",
     institutionName: "",
@@ -116,6 +117,32 @@ const Generate = () => {
     }
   };
 
+  const templates = [
+    {
+      id: "classic",
+      name: "Classic Certificate",
+      description: "Professional teal gradient design",
+      preview: "Classic teal/green gradient with decorative borders",
+    },
+    {
+      id: "internship",
+      name: "Internship Certificate",
+      description: "Orange professional design",
+      preview: "Modern orange design perfect for internships",
+    },
+    {
+      id: "training",
+      name: "Training Certificate",
+      description: "Blue corporate design",
+      preview: "Corporate blue design ideal for training programs",
+    },
+  ];
+
+  const handleTemplateSelect = (templateId: string) => {
+    setSelectedTemplate(templateId);
+    setFormData((prev) => ({ ...prev, templateType: templateId }));
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 via-secondary/10 to-accent">
       <div className="container mx-auto px-4 py-8">
@@ -124,136 +151,176 @@ const Generate = () => {
           <p className="text-muted-foreground">Create professional certificates in minutes</p>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-2">
-          {/* Form Section */}
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-primary" />
-                Certificate Details
-              </CardTitle>
-              <CardDescription>Fill in the information for your certificate</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="studentName">Full Name *</Label>
-                <Input
-                  id="studentName"
-                  placeholder="Enter student's full name"
-                  value={formData.studentName}
-                  onChange={(e) => handleInputChange("studentName", e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="institutionName">Institution/College Name *</Label>
-                <Input
-                  id="institutionName"
-                  placeholder="Enter institution name"
-                  value={formData.institutionName}
-                  onChange={(e) => handleInputChange("institutionName", e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="certificateType">Certificate Type *</Label>
-                <Select value={formData.certificateType} onValueChange={(value) => handleInputChange("certificateType", value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select certificate type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {certificateTypes.map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="domain">Domain/Field *</Label>
-                <Select value={formData.domain} onValueChange={(value) => handleInputChange("domain", value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select domain" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {domains.map((domain) => (
-                      <SelectItem key={domain} value={domain}>
-                        {domain}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="startDate">Start Date</Label>
-                  <Input
-                    id="startDate"
-                    type="date"
-                    value={formData.startDate}
-                    onChange={(e) => handleInputChange("startDate", e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="endDate">End Date</Label>
-                  <Input
-                    id="endDate"
-                    type="date"
-                    value={formData.endDate}
-                    onChange={(e) => handleInputChange("endDate", e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="description">Description (Optional)</Label>
-                <Textarea
-                  id="description"
-                  placeholder="Add any additional information or achievements..."
-                  rows={4}
-                  value={formData.description}
-                  onChange={(e) => handleInputChange("description", e.target.value)}
-                />
-              </div>
-
-              <Button onClick={handleGenerate} disabled={isGenerating} className="w-full" size="lg">
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating...
-                  </>
-                ) : (
-                  "Generate Certificate"
-                )}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Preview Section */}
-          <div className="space-y-4">
+        {!selectedTemplate ? (
+          <div className="mx-auto max-w-5xl">
+            <h2 className="mb-6 text-center text-2xl font-semibold text-foreground">Choose Your Template</h2>
+            <div className="grid gap-6 md:grid-cols-3">
+              {templates.map((template) => (
+                <Card
+                  key={template.id}
+                  className="cursor-pointer transition-all hover:scale-105 hover:shadow-xl"
+                  onClick={() => handleTemplateSelect(template.id)}
+                >
+                  <CardHeader>
+                    <CardTitle className="text-center">{template.name}</CardTitle>
+                    <CardDescription className="text-center">{template.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="aspect-video rounded-lg border-2 border-border bg-muted p-4">
+                      <CertificatePreview
+                        studentName="John Doe"
+                        institutionName="Sample Institution"
+                        certificateType="Sample Certificate"
+                        domain="Sample Domain"
+                        startDate=""
+                        endDate=""
+                        description=""
+                        templateType={template.id}
+                      />
+                    </div>
+                    <Button className="mt-4 w-full">Select Template</Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="grid gap-8 lg:grid-cols-2">
+            {/* Form Section */}
             <Card className="shadow-lg">
               <CardHeader>
-                <CardTitle>Live Preview</CardTitle>
-                <CardDescription>See how your certificate will look</CardDescription>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-primary" />
+                    <CardTitle>Certificate Details</CardTitle>
+                  </div>
+                  <Button variant="outline" size="sm" onClick={() => setSelectedTemplate(null)}>
+                    Change Template
+                  </Button>
+                </div>
+                <CardDescription>Fill in the information for your certificate</CardDescription>
               </CardHeader>
-              <CardContent>
-                <CertificatePreview
-                  studentName={formData.studentName || "Student Name"}
-                  institutionName={formData.institutionName || "Institution Name"}
-                  certificateType={formData.certificateType || "Certificate Type"}
-                  domain={formData.domain || "Domain"}
-                  startDate={formData.startDate}
-                  endDate={formData.endDate}
-                  description={formData.description}
-                  templateType={formData.templateType}
-                />
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="studentName">Full Name *</Label>
+                  <Input
+                    id="studentName"
+                    placeholder="Enter student's full name"
+                    value={formData.studentName}
+                    onChange={(e) => handleInputChange("studentName", e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="institutionName">Institution/College Name *</Label>
+                  <Input
+                    id="institutionName"
+                    placeholder="Enter institution name"
+                    value={formData.institutionName}
+                    onChange={(e) => handleInputChange("institutionName", e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="certificateType">Certificate Type *</Label>
+                  <Select value={formData.certificateType} onValueChange={(value) => handleInputChange("certificateType", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select certificate type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {certificateTypes.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="domain">Domain/Field *</Label>
+                  <Select value={formData.domain} onValueChange={(value) => handleInputChange("domain", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select domain" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {domains.map((domain) => (
+                        <SelectItem key={domain} value={domain}>
+                          {domain}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="startDate">Start Date</Label>
+                    <Input
+                      id="startDate"
+                      type="date"
+                      value={formData.startDate}
+                      onChange={(e) => handleInputChange("startDate", e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="endDate">End Date</Label>
+                    <Input
+                      id="endDate"
+                      type="date"
+                      value={formData.endDate}
+                      onChange={(e) => handleInputChange("endDate", e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="description">Description (Optional)</Label>
+                  <Textarea
+                    id="description"
+                    placeholder="Add any additional information or achievements..."
+                    rows={4}
+                    value={formData.description}
+                    onChange={(e) => handleInputChange("description", e.target.value)}
+                  />
+                </div>
+
+                <Button onClick={handleGenerate} disabled={isGenerating} className="w-full" size="lg">
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    "Generate Certificate"
+                  )}
+                </Button>
               </CardContent>
             </Card>
+
+            {/* Preview Section */}
+            <div className="space-y-4">
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle>Live Preview</CardTitle>
+                  <CardDescription>See how your certificate will look</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <CertificatePreview
+                    studentName={formData.studentName || "Student Name"}
+                    institutionName={formData.institutionName || "Institution Name"}
+                    certificateType={formData.certificateType || "Certificate Type"}
+                    domain={formData.domain || "Domain"}
+                    startDate={formData.startDate}
+                    endDate={formData.endDate}
+                    description={formData.description}
+                    templateType={formData.templateType}
+                  />
+                </CardContent>
+              </Card>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
